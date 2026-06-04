@@ -297,87 +297,136 @@ h6 {
     text-align: right;
 }
 
-/* Welcome Modal Full Screen - Simple version */
-.welcome-overlay {
+/* ========== MODALE DE BIENVENUE ANIMÉE ========== */
+.modal-welcome {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #1e5631, #4c9a2a);
-    z-index: 9999;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+    z-index: 10000;
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: fadeIn 0.5s ease;
+    opacity: 1;
+    transition: opacity 0.4s ease;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+.modal-welcome.fade-out {
+    opacity: 0;
+    pointer-events: none;
 }
 
-.welcome-card {
-    background: white;
-    border-radius: 30px;
-    padding: 50px 30px;
-    max-width: 500px;
+.modal-welcome.fade-out .modal-content-welcome {
+    transform: translateY(30px) scale(0.95);
+    opacity: 0;
+}
+
+.modal-content-welcome {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 24px;
+    padding: 48px 40px;
+    max-width: 480px;
     width: 90%;
     text-align: center;
-    box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-    animation: slideUp 0.5s ease;
+    box-shadow: 0 40px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(25, 135, 84, 0.2);
+    transform: translateY(0) scale(1);
+    transition: all 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
+    animation: modalSlideUp 0.5s ease-out;
 }
 
-@keyframes slideUp {
-    from {
-        transform: translateY(50px);
+@keyframes modalSlideUp {
+    0% {
+        transform: translateY(60px) scale(0.9);
         opacity: 0;
     }
-    to {
-        transform: translateY(0);
+    100% {
+        transform: translateY(0) scale(1);
         opacity: 1;
     }
 }
 
-.welcome-icon {
-    font-size: 80px;
-    color: var(--main);
+.modal-welcome.fade-out .modal-content-welcome {
+    animation: modalSlideDown 0.3s ease forwards;
+}
+
+@keyframes modalSlideDown {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(40px) scale(0.95);
+        opacity: 0;
+    }
+}
+
+.modal-title-welcome {
+    font-size: 34px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--main), var(--dark));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
     margin-bottom: 20px;
+    letter-spacing: -0.5px;
 }
 
-.welcome-title {
-    font-size: 32px;
-    font-weight: bold;
-    color: var(--main);
-    margin-bottom: 25px;
+.modal-divider {
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--main), var(--dark));
+    margin: 0 auto 25px auto;
+    border-radius: 3px;
 }
 
-.welcome-text {
-    font-size: 20px;
+.modal-text-welcome {
+    font-size: 18px;
     line-height: 1.8;
-    color: #333;
+    color: #2c3e2f;
     margin-bottom: 35px;
+    font-weight: 450;
 }
 
-.welcome-text strong {
+.modal-text-welcome strong {
     color: var(--main);
-    font-size: 22px;
+    font-weight: 700;
+    font-size: 20px;
 }
 
-.welcome-btn {
+.modal-btn-welcome {
     background: linear-gradient(135deg, var(--main), var(--dark));
     color: white;
     border: none;
-    padding: 14px 50px;
-    border-radius: 50px;
-    font-size: 20px;
-    font-weight: bold;
+    padding: 14px 48px;
+    border-radius: 60px;
+    font-size: 18px;
+    font-weight: 600;
     cursor: pointer;
-    transition: transform 0.3s;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(25, 135, 84, 0.3);
+    letter-spacing: 0.5px;
 }
 
-.welcome-btn:hover {
-    transform: scale(1.05);
+.modal-btn-welcome:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(25, 135, 84, 0.4);
+}
+
+.modal-btn-welcome:active {
+    transform: translateY(1px);
+}
+
+/* Animation de pulsation subtile sur le bouton au chargement */
+@keyframes gentlePulse {
+    0%, 100% { box-shadow: 0 4px 15px rgba(25, 135, 84, 0.3); }
+    50% { box-shadow: 0 4px 20px rgba(25, 135, 84, 0.5); }
+}
+
+.modal-btn-welcome {
+    animation: gentlePulse 2s infinite;
 }
 </style>
 </head>
@@ -429,16 +478,12 @@ h6 {
     من تصميم : م.الصديق الإدريسي
 </div>
 
-<!-- Welcome Message Overlay - Shows on every page load -->
-<div id="welcomeOverlay" class="welcome-overlay">
-    <div class="welcome-card">
-        <div class="welcome-icon">
-            <i class="fas fa-quran"></i>
-        </div>
-        <div class="welcome-title">
-            🌙 مرحباً بك 🌙
-        </div>
-        <div class="welcome-text">
+<!-- MODALE DE BIENVENUE STYLE ÉLÉGANT - SANS ICÔNES -->
+<div id="welcomeModal" class="modal-welcome">
+    <div class="modal-content-welcome">
+        <div class="modal-title-welcome">مرحباً بك</div>
+        <div class="modal-divider"></div>
+        <div class="modal-text-welcome">
             نرحب بكم في تطبيق <strong>آية كل يوم</strong>
             <br><br>
             نتمنى أن تشاركونا بتعليقاتكم وتفسيراتكم<br>
@@ -446,8 +491,8 @@ h6 {
             <br><br>
             جزاكم الله خيراً
         </div>
-        <button class="welcome-btn" onclick="closeWelcomeMessage()">
-            <i class="fas fa-check-circle"></i> دخول
+        <button class="modal-btn-welcome" onclick="closeWelcomeModal()">
+            دخول
         </button>
     </div>
 </div>
@@ -459,14 +504,20 @@ const API_URL = "https://script.google.com/macros/s/AKfycbwYqSArgABESHI_AbUhldrx
 let isAdmin = false;
 let isLoading = false;
 
-// 🎉 Welcome Message - Shows on EVERY page load
-function showWelcomeMessage() {
-    // Show the overlay immediately on every page load
-    document.getElementById('welcomeOverlay').style.display = 'flex';
+// 🎉 MODALE DE BIENVENUE ANIMÉE - AFFICHAGE UNIQUE AU CHARGEMENT
+function showWelcomeModal() {
+    const modal = document.getElementById('welcomeModal');
+    modal.classList.remove('fade-out');
+    modal.style.display = 'flex';
 }
 
-function closeWelcomeMessage() {
-    document.getElementById('welcomeOverlay').style.display = 'none';
+function closeWelcomeModal() {
+    const modal = document.getElementById('welcomeModal');
+    modal.classList.add('fade-out');
+    // Attendre la fin de l'animation pour masquer complètement
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 400);
 }
 
 // 📅 Obtenir la date du jour
@@ -906,8 +957,8 @@ function adminLogin() {
     });
 }
 
-// Initialisation
-showWelcomeMessage();  // Shows welcome message on EVERY page load
+// Initialisation - Afficher la modale de bienvenue au chargement
+showWelcomeModal();
 loadAyah();
 loadComments(false);
 

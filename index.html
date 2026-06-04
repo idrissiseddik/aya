@@ -340,6 +340,17 @@ function getTodayKey() {
     return `${year}-${month}-${day}`;
 }
 
+// 🔑 Générer un nombre aléatoire basé sur la date (identique pour tous)
+function getDailyNumber(max, seed) {
+    let hash = 0;
+    for (let i = 0; i < seed.length; i++) {
+        hash = ((hash << 5) - hash) + seed.charCodeAt(i);
+        hash = hash & hash;
+    }
+    const random = Math.abs(Math.sin(hash) * 10000) % max;
+    return Math.floor(random) + 1;
+}
+
 // Convertir date en format YYYY-MM-DD
 function convertToDateKey(dateValue) {
     if (!dateValue) return null;
@@ -371,151 +382,109 @@ function showNotification(message, isError = false) {
 
 document.getElementById('todayBadge').innerHTML = getTodayKey();
 
-// 📚 Noms des sourates en arabe (COMPLET - 114 sourates)
+// 📚 Noms des sourates en arabe (COMPLET)
 const sourateNamesAr = {
-    "Al-Fatiha": "الفاتحة",
-    "Al-Baqarah": "البقرة",
-    "Aal-E-Imran": "آل عمران",
-    "An-Nisa": "النساء",
-    "Al-Ma'idah": "المائدة",
-    "Al-An'am": "الأنعام",
-    "Al-A'raf": "الأعراف",
-    "Al-Anfal": "الأنفال",
-    "At-Tawbah": "التوبة",
-    "Yunus": "يونس",
-    "Hud": "هود",
-    "Yusuf": "يوسف",
-    "Ar-Ra'd": "الرعد",
-    "Ibrahim": "إبراهيم",
-    "Al-Hijr": "الحجر",
-    "An-Nahl": "النحل",
-    "Al-Isra": "الإسراء",
-    "Al-Kahf": "الكهف",
-    "Maryam": "مريم",
-    "Ta-Ha": "طه",
-    "Al-Anbiya": "الأنبياء",
-    "Al-Hajj": "الحج",
-    "Al-Mu'minun": "المؤمنون",
-    "An-Nur": "النور",
-    "Al-Furqan": "الفرقان",
-    "Ash-Shu'ara": "الشعراء",
-    "An-Naml": "النمل",
-    "Al-Qasas": "القصص",
-    "Al-Ankabut": "العنكبوت",
-    "Ar-Rum": "الروم",
-    "Luqman": "لقمان",
-    "As-Sajdah": "السجدة",
-    "Al-Ahzab": "الأحزاب",
-    "Saba": "سبأ",
-    "Fatir": "فاطر",
-    "Ya-Sin": "يس",
-    "As-Saffat": "الصافات",
-    "Sad": "ص",
-    "Az-Zumar": "الزمر",
-    "Ghafir": "غافر",
-    "Fussilat": "فصلت",
-    "Ash-Shura": "الشورى",
-    "Az-Zukhruf": "الزخرف",
-    "Ad-Dukhan": "الدخان",
-    "Al-Jathiya": "الجاثية",
-    "Al-Ahqaf": "الأحقاف",
-    "Muhammad": "محمد",
-    "Al-Fath": "الفتح",
-    "Al-Hujurat": "الحجرات",
-    "Qaf": "ق",
-    "Adh-Dhariyat": "الذاريات",
-    "At-Tur": "الطور",
-    "An-Najm": "النجم",
-    "Al-Qamar": "القمر",
-    "Ar-Rahman": "الرحمن",
-    "Al-Waqi'a": "الواقعة",
-    "Al-Hadid": "الحديد",
-    "Al-Mujadila": "المجادلة",
-    "Al-Hashr": "الحشر",
-    "Al-Mumtahanah": "الممتحنة",
-    "As-Saff": "الصف",
-    "Al-Jumu'ah": "الجمعة",
-    "Al-Munafiqun": "المنافقون",
-    "At-Taghabun": "التغابن",
-    "At-Talaq": "الطلاق",
-    "At-Tahrim": "التحريم",
-    "Al-Mulk": "الملك",
-    "Al-Qalam": "القلم",
-    "Al-Haqqah": "الحاقة",
-    "Al-Ma'arij": "المعارج",
-    "Nuh": "نوح",
-    "Al-Jinn": "الجن",
-    "Al-Muzzammil": "المزمل",
-    "Al-Muddaththir": "المدثر",
-    "Al-Qiyamah": "القيامة",
-    "Al-Insan": "الإنسان",
-    "Al-Mursalat": "المرسلات",
-    "An-Naba": "النبأ",
-    "An-Nazi'at": "النازعات",
-    "Abasa": "عبس",
-    "At-Takwir": "التكوير",
-    "Al-Infitar": "الإنفطار",
-    "Al-Mutaffifin": "المطففين",
-    "Al-Inshiqaq": "الإنشقاق",
-    "Al-Buruj": "البروج",
-    "At-Tariq": "الطارق",
-    "Al-A'la": "الأعلى",
-    "Al-Ghashiyah": "الغاشية",
-    "Al-Fajr": "الفجر",
-    "Al-Balad": "البلد",
-    "Ash-Shams": "الشمس",
-    "Al-Layl": "الليل",
-    "Ad-Duha": "الضحى",
-    "Ash-Sharh": "الشرح",
-    "At-Tin": "التين",
-    "Al-Alaq": "العلق",
-    "Al-Qadr": "القدر",
-    "Al-Bayyinah": "البينة",
-    "Az-Zalzalah": "الزلزلة",
-    "Al-Adiyat": "العاديات",
-    "Al-Qari'ah": "القارعة",
-    "At-Takathur": "التكاثر",
-    "Al-Asr": "العصر",
-    "Al-Humazah": "الهمزة",
-    "Al-Fil": "الفيل",
-    "Quraish": "قريش",
-    "Al-Ma'un": "الماعون",
-    "Al-Kawthar": "الكوثر",
-    "Al-Kafirun": "الكافرون",
-    "An-Nasr": "النصر",
-    "Al-Masad": "المسد",
-    "Al-Ikhlas": "الإخلاص",
-    "Al-Falaq": "الفلق",
-    "An-Nas": "الناس"
+    "Al-Fatiha": "الفاتحة", "Al-Baqarah": "البقرة", "Aal-E-Imran": "آل عمران",
+    "An-Nisa": "النساء", "Al-Ma'idah": "المائدة", "Al-An'am": "الأنعام",
+    "Al-A'raf": "الأعراف", "Al-Anfal": "الأنفال", "At-Tawbah": "التوبة",
+    "Yunus": "يونس", "Hud": "هود", "Yusuf": "يوسف", "Ar-Ra'd": "الرعد",
+    "Ibrahim": "إبراهيم", "Al-Hijr": "الحجر", "An-Nahl": "النحل",
+    "Al-Isra": "الإسراء", "Al-Kahf": "الكهف", "Maryam": "مريم",
+    "Ta-Ha": "طه", "Al-Anbiya": "الأنبياء", "Al-Hajj": "الحج",
+    "Al-Mu'minun": "المؤمنون", "An-Nur": "النور", "Al-Furqan": "الفرقان",
+    "Ash-Shu'ara": "الشعراء", "An-Naml": "النمل", "Al-Qasas": "القصص",
+    "Al-Ankabut": "العنكبوت", "Ar-Rum": "الروم", "Luqman": "لقمان",
+    "As-Sajdah": "السجدة", "Al-Ahzab": "الأحزاب", "Saba": "سبأ",
+    "Fatir": "فاطر", "Ya-Sin": "يس", "As-Saffat": "الصافات",
+    "Sad": "ص", "Az-Zumar": "الزمر", "Ghafir": "غافر", "Fussilat": "فصلت",
+    "Ash-Shura": "الشورى", "Az-Zukhruf": "الزخرف", "Ad-Dukhan": "الدخان",
+    "Al-Jathiya": "الجاثية", "Al-Ahqaf": "الأحقاف", "Muhammad": "محمد",
+    "Al-Fath": "الفتح", "Al-Hujurat": "الحجرات", "Qaf": "ق",
+    "Adh-Dhariyat": "الذاريات", "At-Tur": "الطور", "An-Najm": "النجم",
+    "Al-Qamar": "القمر", "Ar-Rahman": "الرحمن", "Al-Waqi'a": "الواقعة",
+    "Al-Hadid": "الحديد", "Al-Mujadila": "المجادلة", "Al-Hashr": "الحشر",
+    "Al-Mumtahanah": "الممتحنة", "As-Saff": "الصف", "Al-Jumu'ah": "الجمعة",
+    "Al-Munafiqun": "المنافقون", "At-Taghabun": "التغابن", "At-Talaq": "الطلاق",
+    "At-Tahrim": "التحريم", "Al-Mulk": "الملك", "Al-Qalam": "القلم",
+    "Al-Haqqah": "الحاقة", "Al-Ma'arij": "المعارج", "Nuh": "نوح",
+    "Al-Jinn": "الجن", "Al-Muzzammil": "المزمل", "Al-Muddaththir": "المدثر",
+    "Al-Qiyamah": "القيامة", "Al-Insan": "الإنسان", "Al-Mursalat": "المرسلات",
+    "An-Naba": "النبأ", "An-Nazi'at": "النازعات", "Abasa": "عبس",
+    "At-Takwir": "التكوير", "Al-Infitar": "الإنفطار", "Al-Mutaffifin": "المطففين",
+    "Al-Inshiqaq": "الإنشقاق", "Al-Buruj": "البروج", "At-Tariq": "الطارق",
+    "Al-A'la": "الأعلى", "Al-Ghashiyah": "الغاشية", "Al-Fajr": "الفجر",
+    "Al-Balad": "البلد", "Ash-Shams": "الشمس", "Al-Layl": "الليل",
+    "Ad-Duha": "الضحى", "Ash-Sharh": "الشرح", "At-Tin": "التين",
+    "Al-Alaq": "العلق", "Al-Qadr": "القدر", "Al-Bayyinah": "البينة",
+    "Az-Zalzalah": "الزلزلة", "Al-Adiyat": "العاديات", "Al-Qari'ah": "القارعة",
+    "At-Takathur": "التكاثر", "Al-Asr": "العصر", "Al-Humazah": "الهمزة",
+    "Al-Fil": "الفيل", "Quraish": "قريش", "Al-Ma'un": "الماعون",
+    "Al-Kawthar": "الكوثر", "Al-Kafirun": "الكافرون", "An-Nasr": "النصر",
+    "Al-Masad": "المسد", "Al-Ikhlas": "الإخلاص", "Al-Falaq": "الفلق", "An-Nas": "الناس"
 };
 
-/* 📖 CHARGER AYA DU JOUR */
+/* 📖 CHARGER AYA - Version avec numéro de verset fixe par jour */
 async function loadAyah() {
     try {
         const todayKey = getTodayKey();
-        const cachedAyah = localStorage.getItem(`ayah_${todayKey}`);
         
-        if (cachedAyah) {
-            displayAyah(JSON.parse(cachedAyah));
+        // Vérifier si l'aya du jour est déjà dans le localStorage
+        let ayah = localStorage.getItem(`ayah_fixed_${todayKey}`);
+        
+        if (ayah) {
+            displayAyah(JSON.parse(ayah));
             return;
         }
         
-        const res = await fetch("https://api.alquran.cloud/v1/ayah/random");
+        // Utiliser un nombre de sourate et verset basé sur la date
+        // Nombre total de sourates: 114, Nombre total de versets approx: 6236
+        const sourateNumber = getDailyNumber(114, todayKey);
+        const versetNumber = getDailyNumber(10, todayKey + "verse");
+        
+        // Chercher un verset spécifique (pour avoir le même pour tous)
+        // API pour récupérer un verset spécifique
+        const res = await fetch(`https://api.alquran.cloud/v1/ayah/${sourateNumber}:${versetNumber}`);
         const data = await res.json();
         
-        const ayah = {
-            sourateNameFr: data.data.surah.englishName,
-            sourateNameAr: sourateNamesAr[data.data.surah.englishName] || data.data.surah.name,
-            ayahNumber: data.data.numberInSurah,
-            ayahText: data.data.text
-        };
+        if (data.data) {
+            ayah = {
+                sourateNameFr: data.data.surah.englishName,
+                sourateNameAr: sourateNamesAr[data.data.surah.englishName] || data.data.surah.name,
+                ayahNumber: data.data.numberInSurah,
+                ayahText: data.data.text
+            };
+        } else {
+            // Fallback: verset aléatoire
+            const fallbackRes = await fetch("https://api.alquran.cloud/v1/ayah/random");
+            const fallbackData = await fallbackRes.json();
+            ayah = {
+                sourateNameFr: fallbackData.data.surah.englishName,
+                sourateNameAr: sourateNamesAr[fallbackData.data.surah.englishName] || fallbackData.data.surah.name,
+                ayahNumber: fallbackData.data.numberInSurah,
+                ayahText: fallbackData.data.text
+            };
+        }
         
-        localStorage.setItem(`ayah_${todayKey}`, JSON.stringify(ayah));
+        // Stocker dans localStorage pour tous les utilisateurs
+        localStorage.setItem(`ayah_fixed_${todayKey}`, JSON.stringify(ayah));
         displayAyah(ayah);
         
     } catch(error) {
-        console.error(error);
-        document.getElementById("ayahBox").innerHTML = `<div class="text-center text-danger">Erreur de chargement du verset</div>`;
+        console.error("Erreur chargement aya:", error);
+        // Tentative de récupération
+        try {
+            const res = await fetch("https://api.alquran.cloud/v1/ayah/random");
+            const data = await res.json();
+            const ayah = {
+                sourateNameFr: data.data.surah.englishName,
+                sourateNameAr: sourateNamesAr[data.data.surah.englishName] || data.data.surah.name,
+                ayahNumber: data.data.numberInSurah,
+                ayahText: data.data.text
+            };
+            displayAyah(ayah);
+        } catch(e) {
+            document.getElementById("ayahBox").innerHTML = `<div class="text-center text-danger">Erreur de chargement du verset</div>`;
+        }
     }
 }
 
@@ -541,7 +510,6 @@ async function likeComment(commentId, buttonElement) {
     const likeSpan = buttonElement.querySelector('.like-count');
     const currentLikes = likeSpan ? parseInt(likeSpan.textContent) : 0;
     
-    // Mise à jour optimiste
     if (likeSpan) {
         likeSpan.textContent = currentLikes + 1;
     }
@@ -769,7 +737,6 @@ async function addComment() {
     }
 }
 
-// Échapper les caractères HTML
 function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');

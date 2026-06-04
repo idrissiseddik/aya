@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="ar">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,9 +12,10 @@
 <style>
 body{
     background:#f4f6f9;
-    font-family:'Segoe UI', Arial;
+    font-family:'Segoe UI', Arial, 'Traditional Arabic';
     padding-top:95px;
     padding-bottom:75px;
+    direction: rtl;
 }
 
 :root{
@@ -33,16 +34,48 @@ body{
     padding:12px 10px;
     z-index:1000;
     box-shadow:0 3px 10px rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .header-title{
     font-size:18px;
     font-weight:bold;
+    flex-grow: 1;
+    text-align: center;
 }
 
 .header-sub{
     font-size:12px;
     opacity:0.9;
+    margin-top: 3px;
+}
+
+.header-left{
+    width: 45px;
+    visibility: hidden;
+}
+
+.header-right{
+    width: 45px;
+}
+
+.admin-header-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 18px;
+}
+
+.admin-header-btn:hover {
+    background: rgba(255,255,255,0.4);
+    transform: scale(1.05);
 }
 
 .footer{
@@ -79,26 +112,6 @@ body{
 
 .comment:last-child{
     border-bottom:none;
-}
-
-.admin-btn{
-    position:fixed;
-    bottom:85px;
-    right:15px;
-    background:#000;
-    color:white;
-    width:55px;
-    height:55px;
-    border-radius:50%;
-    border:none;
-    box-shadow:0 3px 10px rgba(0,0,0,0.3);
-    transition: transform 0.2s;
-    z-index:1000;
-    cursor:pointer;
-}
-
-.admin-btn:hover{
-    transform: scale(1.05);
 }
 
 input, textarea{
@@ -168,7 +181,7 @@ input, textarea{
 }
 
 .comment-name i {
-    margin-right: 5px;
+    margin-left: 5px;
 }
 
 .comment-date {
@@ -180,6 +193,7 @@ input, textarea{
     margin: 10px 0;
     line-height: 1.5;
     color: #333;
+    text-align: right;
 }
 
 .btn-like {
@@ -211,7 +225,7 @@ input, textarea{
     padding: 4px 12px;
     border-radius: 20px;
     font-size: 12px;
-    margin-left: 8px;
+    margin-right: 8px;
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -228,7 +242,7 @@ input, textarea{
     padding: 2px 10px;
     border-radius: 20px;
     font-size: 11px;
-    margin-left: 8px;
+    margin-right: 8px;
 }
 
 .refresh-btn {
@@ -247,7 +261,7 @@ input, textarea{
 .comment-count {
     font-size: 12px;
     color: #666;
-    margin-left: 8px;
+    margin-right: 8px;
 }
 
 .toast-notification {
@@ -276,7 +290,94 @@ input, textarea{
     padding: 2px 8px;
     border-radius: 12px;
     font-size: 10px;
-    margin-left: 10px;
+    margin-right: 10px;
+}
+
+h6 {
+    text-align: right;
+}
+
+/* Welcome Modal Full Screen - Simple version */
+.welcome-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1e5631, #4c9a2a);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.welcome-card {
+    background: white;
+    border-radius: 30px;
+    padding: 50px 30px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+    animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.welcome-icon {
+    font-size: 80px;
+    color: var(--main);
+    margin-bottom: 20px;
+}
+
+.welcome-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: var(--main);
+    margin-bottom: 25px;
+}
+
+.welcome-text {
+    font-size: 20px;
+    line-height: 1.8;
+    color: #333;
+    margin-bottom: 35px;
+}
+
+.welcome-text strong {
+    color: var(--main);
+    font-size: 22px;
+}
+
+.welcome-btn {
+    background: linear-gradient(135deg, var(--main), var(--dark));
+    color: white;
+    border: none;
+    padding: 14px 50px;
+    border-radius: 50px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.welcome-btn:hover {
+    transform: scale(1.05);
 }
 </style>
 </head>
@@ -284,44 +385,71 @@ input, textarea{
 <body>
 
 <div class="header">
-    <div class="header-title">📖 آية كل يوم</div>
-    <div class="header-sub">أضف تفسير أو تعليق على الآية الكريمة</div>
+    <div class="header-left"></div>
+    <div>
+        <div class="header-title">📖 آية كل يوم</div>
+        <div class="header-sub">أضف تفسير أو تعليق على الآية الكريمة</div>
+    </div>
+    <div class="header-right">
+        <button class="admin-header-btn" onclick="adminLogin()" title="دخول المشرف">
+            <i class="fa fa-lock"></i>
+        </button>
+    </div>
 </div>
 
 <div class="card-box" id="ayahBox">
     <div class="loading-spinner">
         <div class="spinner-border text-success" role="status"></div>
-        <p>Chargement de l'aya...</p>
+        <p>جاري تحميل الآية...</p>
     </div>
 </div>
 
 <div class="card-box">
-    <input id="name" class="form-control mb-2" placeholder="👤 Votre nom">
-    <textarea id="text" class="form-control" rows="3" placeholder="📝 Écris ton commentaire..."></textarea>
+    <input id="name" class="form-control mb-2" placeholder="👤 اسمك">
+    <textarea id="text" class="form-control" rows="3" placeholder="📝 اكتب تعليقك أو تفسيرك..."></textarea>
     <button id="sendBtn" class="btn btn-success w-100 mt-2" onclick="addComment()">
-        <i class="fa fa-paper-plane"></i> Envoyer commentaire
+        <i class="fa fa-paper-plane"></i> إرسال التعليق
     </button>
 </div>
 
 <div class="card-box">
     <h6 class="mb-3">
-        💬 Commentaires de l'aya d'aujourd'hui
-        <button class="refresh-btn" onclick="loadComments(true)" title="Rafraîchir">
+        💬 تعليقات آية اليوم
+        <button class="refresh-btn" onclick="loadComments(true)" title="تحديث">
             <i class="fas fa-sync-alt"></i>
         </button>
         <span class="today-badge" id="todayBadge"></span>
         <span class="comment-count" id="commentCount"></span>
-        <span id="adminBadge" class="admin-badge" style="display:none;">👑 Admin</span>
+        <span id="adminBadge" class="admin-badge" style="display:none;">👑 المشرف</span>
     </h6>
     <div id="comments"></div>
 </div>
 
-<button class="admin-btn" onclick="adminLogin()">
-    <i class="fa fa-lock"></i>
-</button>
-
 <div class="footer">
-    Créé par : M.Seddik EL Idrissi
+    من تصميم: M.Seddik EL Idrissi
+</div>
+
+<!-- Welcome Message Overlay - Shows on every page load -->
+<div id="welcomeOverlay" class="welcome-overlay">
+    <div class="welcome-card">
+        <div class="welcome-icon">
+            <i class="fas fa-quran"></i>
+        </div>
+        <div class="welcome-title">
+            🌙 مرحباً بك 🌙
+        </div>
+        <div class="welcome-text">
+            نرحب بكم في تطبيق <strong>آية كل يوم</strong>
+            <br><br>
+            نتمنى أن تشاركونا بتعليقاتكم وتفسيراتكم<br>
+            لآية اليوم الكريمة
+            <br><br>
+            جزاكم الله خيراً
+        </div>
+        <button class="welcome-btn" onclick="closeWelcomeMessage()">
+            <i class="fas fa-check-circle"></i> دخول
+        </button>
+    </div>
 </div>
 
 <script>
@@ -330,6 +458,16 @@ input, textarea{
 const API_URL = "https://script.google.com/macros/s/AKfycbwYqSArgABESHI_AbUhldrxUnnQ6Vcfl5kZORSYj5GEroNVeRYhLg6mmMGkpLsNYEB9PA/exec";
 let isAdmin = false;
 let isLoading = false;
+
+// 🎉 Welcome Message - Shows on EVERY page load
+function showWelcomeMessage() {
+    // Show the overlay immediately on every page load
+    document.getElementById('welcomeOverlay').style.display = 'flex';
+}
+
+function closeWelcomeMessage() {
+    document.getElementById('welcomeOverlay').style.display = 'none';
+}
 
 // 📅 Obtenir la date du jour
 function getTodayKey() {
@@ -423,12 +561,11 @@ const sourateNamesAr = {
     "Al-Masad": "المسد", "Al-Ikhlas": "الإخلاص", "Al-Falaq": "الفلق", "An-Nas": "الناس"
 };
 
-/* 📖 CHARGER AYA - Version avec numéro de verset fixe par jour */
+/* 📖 CHARGER AYA */
 async function loadAyah() {
     try {
         const todayKey = getTodayKey();
         
-        // Vérifier si l'aya du jour est déjà dans le localStorage
         let ayah = localStorage.getItem(`ayah_fixed_${todayKey}`);
         
         if (ayah) {
@@ -436,13 +573,9 @@ async function loadAyah() {
             return;
         }
         
-        // Utiliser un nombre de sourate et verset basé sur la date
-        // Nombre total de sourates: 114, Nombre total de versets approx: 6236
         const sourateNumber = getDailyNumber(114, todayKey);
         const versetNumber = getDailyNumber(10, todayKey + "verse");
         
-        // Chercher un verset spécifique (pour avoir le même pour tous)
-        // API pour récupérer un verset spécifique
         const res = await fetch(`https://api.alquran.cloud/v1/ayah/${sourateNumber}:${versetNumber}`);
         const data = await res.json();
         
@@ -454,7 +587,6 @@ async function loadAyah() {
                 ayahText: data.data.text
             };
         } else {
-            // Fallback: verset aléatoire
             const fallbackRes = await fetch("https://api.alquran.cloud/v1/ayah/random");
             const fallbackData = await fallbackRes.json();
             ayah = {
@@ -465,13 +597,11 @@ async function loadAyah() {
             };
         }
         
-        // Stocker dans localStorage pour tous les utilisateurs
         localStorage.setItem(`ayah_fixed_${todayKey}`, JSON.stringify(ayah));
         displayAyah(ayah);
         
     } catch(error) {
         console.error("Erreur chargement aya:", error);
-        // Tentative de récupération
         try {
             const res = await fetch("https://api.alquran.cloud/v1/ayah/random");
             const data = await res.json();
@@ -483,7 +613,7 @@ async function loadAyah() {
             };
             displayAyah(ayah);
         } catch(e) {
-            document.getElementById("ayahBox").innerHTML = `<div class="text-center text-danger">Erreur de chargement du verset</div>`;
+            document.getElementById("ayahBox").innerHTML = `<div class="text-center text-danger">خطأ في تحميل الآية</div>`;
         }
     }
 }
@@ -496,14 +626,14 @@ function displayAyah(ayah) {
         </div>
         <div class="aya-text">${ayah.ayahText}</div>
         <div class="sadaq-allah">﴿ صدق الله العظيم ﴾</div>
-        <div class="date-info">📅 ${new Date().toLocaleDateString('fr-FR')}</div>
+        <div class="date-info">📅 ${new Date().toLocaleDateString('ar-EG')}</div>
     `;
 }
 
-/* ❤️ FONCTION LIKE */
+/* ❤️ LIKE */
 async function likeComment(commentId, buttonElement) {
     if (commentId === undefined || commentId === null) {
-        showNotification("❌ ID du commentaire manquant", true);
+        showNotification("❌ معرف التعليق مفقود", true);
         return;
     }
     
@@ -525,12 +655,12 @@ async function likeComment(commentId, buttonElement) {
             if (likeSpan) {
                 likeSpan.textContent = result.likes;
             }
-            showNotification("❤️ Like ajouté !");
+            showNotification("❤️ تمت الإضافة!");
         } else {
             if (likeSpan) {
                 likeSpan.textContent = currentLikes;
             }
-            showNotification("❌ " + (result.error || "Erreur"), true);
+            showNotification("❌ " + (result.error || "خطأ"), true);
         }
         
     } catch(error) {
@@ -538,29 +668,29 @@ async function likeComment(commentId, buttonElement) {
         if (likeSpan) {
             likeSpan.textContent = currentLikes;
         }
-        showNotification("❌ Erreur de connexion", true);
+        showNotification("❌ خطأ في الاتصال", true);
     } finally {
         buttonElement.disabled = false;
         buttonElement.style.opacity = '1';
     }
 }
 
-/* 🗑 FONCTION SUPPRESSION */
+/* 🗑 DELETE */
 async function deleteComment(commentId, buttonElement) {
     if (!isAdmin) {
-        showNotification("❌ Mode admin non activé", true);
+        showNotification("❌ وضع المشرف غير مفعل", true);
         return;
     }
     
     const confirm = await Swal.fire({
-        title: '🗑 Supprimer le commentaire',
-        text: 'Êtes-vous sûr de vouloir supprimer ce commentaire ?',
+        title: '🗑 حذف التعليق',
+        text: 'هل أنت متأكد من حذف هذا التعليق؟',
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#d33',
         cancelButtonColor: '#198754',
-        confirmButtonText: 'Oui, supprimer',
-        cancelButtonText: 'Annuler'
+        confirmButtonText: 'نعم، احذف',
+        cancelButtonText: 'إلغاء'
     });
     
     if (!confirm.isConfirmed) return;
@@ -575,24 +705,24 @@ async function deleteComment(commentId, buttonElement) {
         const result = await response.json();
         
         if (result.success) {
-            showNotification("✅ Commentaire supprimé !");
+            showNotification("✅ تم حذف التعليق!");
             setTimeout(() => loadComments(true), 500);
         } else {
-            showNotification("❌ " + (result.error || "Erreur lors de la suppression"), true);
+            showNotification("❌ " + (result.error || "خطأ أثناء الحذف"), true);
         }
         
     } catch(error) {
         console.error("Erreur suppression:", error);
-        showNotification("❌ Erreur de connexion", true);
+        showNotification("❌ خطأ في الاتصال", true);
     } finally {
         if (buttonElement) {
             buttonElement.disabled = false;
-            buttonElement.innerHTML = '🗑 Supprimer';
+            buttonElement.innerHTML = '🗑 حذف';
         }
     }
 }
 
-/* 💬 CHARGER COMMENTAIRES */
+/* 💬 LOAD COMMENTS */
 async function loadComments(showRefreshMessage = false) {
     if (isLoading) return;
     isLoading = true;
@@ -610,7 +740,6 @@ async function loadComments(showRefreshMessage = false) {
             throw new Error(allComments.error);
         }
         
-        // Filtrer les commentaires du jour
         const todayComments = allComments.filter(comment => {
             const convertedDate = convertToDateKey(comment.dayKey);
             return convertedDate === todayKey;
@@ -622,17 +751,17 @@ async function loadComments(showRefreshMessage = false) {
             document.getElementById("comments").innerHTML = `
                 <div class="text-center text-muted py-4">
                     <i class="fas fa-comment-dots fa-2x mb-2"></i>
-                    <p>Aucun commentaire pour aujourd'hui</p>
-                    <small>Soyez le premier à commenter !</small>
+                    <p>لا توجد تعليقات لهذا اليوم</p>
+                    <small>كن أول من يعلق!</small>
                 </div>
             `;
-            if (showRefreshMessage) showNotification("📭 Aucun commentaire");
+            if (showRefreshMessage) showNotification("📭 لا توجد تعليقات");
             return;
         }
         
         let html = "";
         todayComments.forEach((comment) => {
-            const name = escapeHtml(comment.name || "Anonyme");
+            const name = escapeHtml(comment.name || "مجهول");
             const text = escapeHtml(comment.text || "");
             const date = comment.date || "";
             const likes = comment.likes || 0;
@@ -654,7 +783,7 @@ async function loadComments(showRefreshMessage = false) {
                             ❤️ <span class="like-count">${likes}</span>
                         </button>
                         ${isAdmin ? `<button class="btn-delete" onclick="deleteComment(${commentId}, this)">
-                            🗑 Supprimer
+                            🗑 حذف
                         </button>` : ''}
                     </div>
                 </div>
@@ -662,17 +791,17 @@ async function loadComments(showRefreshMessage = false) {
         });
         
         document.getElementById("comments").innerHTML = html;
-        if (showRefreshMessage) showNotification(`✅ ${todayComments.length} commentaire(s)`);
+        if (showRefreshMessage) showNotification(`✅ ${todayComments.length} تعليق(ات)`);
         
     } catch(error) {
         console.error("Erreur:", error);
         document.getElementById("comments").innerHTML = `
             <div class="text-center text-danger">
-                <p>⚠️ Erreur de connexion</p>
-                <button class="btn btn-sm btn-success" onclick="loadComments(true)">🔄 Réessayer</button>
+                <p>⚠️ خطأ في الاتصال</p>
+                <button class="btn btn-sm btn-success" onclick="loadComments(true)">🔄 إعادة المحاولة</button>
             </div>
         `;
-        if (showRefreshMessage) showNotification("❌ Erreur de connexion", true);
+        if (showRefreshMessage) showNotification("❌ خطأ في الاتصال", true);
     } finally {
         isLoading = false;
         const refreshBtn = document.querySelector('.refresh-btn i');
@@ -680,7 +809,7 @@ async function loadComments(showRefreshMessage = false) {
     }
 }
 
-/* 📤 AJOUTER COMMENTAIRE */
+/* 📤 ADD COMMENT */
 async function addComment() {
     const nameInput = document.getElementById("name");
     const textInput = document.getElementById("text");
@@ -688,16 +817,16 @@ async function addComment() {
     const todayKey = getTodayKey();
 
     if (!textInput.value.trim()) {
-        Swal.fire("Erreur", "Écris un commentaire", "error");
+        Swal.fire("خطأ", "اكتب تعليقاً", "error");
         return;
     }
 
     btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
 
     try {
         const commentData = {
-            name: nameInput.value.trim() || "Anonyme",
+            name: nameInput.value.trim() || "مجهول",
             text: textInput.value.trim(),
             dayKey: todayKey
         };
@@ -713,7 +842,7 @@ async function addComment() {
         
         Swal.fire({
             icon: 'success',
-            title: '✅ Commentaire ajouté !',
+            title: '✅ تم إضافة التعليق!',
             timer: 1500,
             showConfirmButton: false
         });
@@ -724,7 +853,7 @@ async function addComment() {
         console.error("Erreur:", error);
         Swal.fire({
             icon: 'success',
-            title: 'Commentaire envoyé',
+            title: 'تم إرسال التعليق',
             timer: 1500,
             showConfirmButton: false
         });
@@ -733,7 +862,7 @@ async function addComment() {
         setTimeout(() => loadComments(true), 1000);
     } finally {
         btn.disabled = false;
-        btn.innerHTML = '<i class="fa fa-paper-plane"></i> Envoyer';
+        btn.innerHTML = '<i class="fa fa-paper-plane"></i> إرسال التعليق';
     }
 }
 
@@ -747,21 +876,21 @@ function escapeHtml(text) {
 /* 🔐 ADMIN LOGIN */
 function adminLogin() {
     Swal.fire({
-        title: "🔐 Mode Administrateur",
-        text: "Entrez le mot de passe",
+        title: "🔐 وضع المشرف",
+        text: "أدخل كلمة المرور",
         input: "password",
-        inputPlaceholder: "Mot de passe",
+        inputPlaceholder: "كلمة المرور",
         showCancelButton: true,
-        confirmButtonText: "Valider",
-        cancelButtonText: "Annuler"
+        confirmButtonText: "تأكيد",
+        cancelButtonText: "إلغاء"
     }).then(res => {
         if (res.value === "Seddik") {
             isAdmin = true;
             document.getElementById('adminBadge').style.display = 'inline-block';
             Swal.fire({
                 icon: 'success',
-                title: '✅ Mode admin activé !',
-                text: 'Vous pouvez maintenant supprimer les commentaires',
+                title: '✅ تم تفعيل وضع المشرف!',
+                text: 'يمكنك الآن حذف التعليقات',
                 timer: 2000,
                 showConfirmButton: false
             });
@@ -769,8 +898,8 @@ function adminLogin() {
         } else if (res.value) {
             Swal.fire({
                 icon: 'error',
-                title: '❌ Erreur',
-                text: 'Mot de passe incorrect',
+                title: '❌ خطأ',
+                text: 'كلمة المرور غير صحيحة',
                 confirmButtonColor: '#198754'
             });
         }
@@ -778,10 +907,11 @@ function adminLogin() {
 }
 
 // Initialisation
+showWelcomeMessage();  // Shows welcome message on EVERY page load
 loadAyah();
 loadComments(false);
 
-// Rafraîchissement automatique toutes les 30 secondes
+// Auto refresh every 30 seconds
 setInterval(() => {
     loadComments(false);
 }, 30000);

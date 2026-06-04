@@ -96,6 +96,51 @@ input, textarea{
     border-radius:10px !important;
 }
 
+/* 🎨 AYA STYLES */
+.aya-arabic {
+    font-size: 24px;
+    text-align: right;
+    line-height: 1.8;
+    margin: 15px 0;
+    font-family: 'Traditional Arabic', 'Amiri', 'Scheherazade New', serif;
+}
+
+.soura-info {
+    text-align: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.soura-name-ar {
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--main);
+    margin: 5px 0;
+}
+
+.soura-name-fr {
+    font-size: 14px;
+    color: #666;
+}
+
+.aya-text {
+    font-size: 22px;
+    text-align: right;
+    line-height: 1.8;
+    margin: 20px 0;
+}
+
+.sadaq-allah {
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--main);
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed #ddd;
+}
+
 </style>
 </head>
 
@@ -138,15 +183,150 @@ Créé par : M.Seddik EL Idrissi
 const API_URL = "https://script.google.com/macros/s/AKfycbyRITNqz1TiJZM1jeFo_IKRIFZkQnwyZkINJgPkRhqomMj8cSHS4xQCY-TwEi3WNQ8TNg/exec";
 let isAdmin = false;
 
-/* 📖 AYAH */
-async function loadAyah(){
-    const res = await fetch("https://api.alquran.cloud/v1/ayah/random");
-    const data = await res.json();
+// 📚 Dictionnaire des noms de sourates en arabe
+const sourateNamesAr = {
+    "Al-Fatiha": "الفاتحة",
+    "Al-Baqarah": "البقرة",
+    "Aal-E-Imran": "آل عمران",
+    "An-Nisa": "النساء",
+    "Al-Ma'idah": "المائدة",
+    "Al-An'am": "الأنعام",
+    "Al-A'raf": "الأعراف",
+    "Al-Anfal": "الأنفال",
+    "At-Tawbah": "التوبة",
+    "Yunus": "يونس",
+    "Hud": "هود",
+    "Yusuf": "يوسف",
+    "Ar-Ra'd": "الرعد",
+    "Ibrahim": "إبراهيم",
+    "Al-Hijr": "الحجر",
+    "An-Nahl": "النحل",
+    "Al-Isra": "الإسراء",
+    "Al-Kahf": "الكهف",
+    "Maryam": "مريم",
+    "Ta-Ha": "طه",
+    "Al-Anbiya": "الأنبياء",
+    "Al-Hajj": "الحج",
+    "Al-Mu'minun": "المؤمنون",
+    "An-Nur": "النور",
+    "Al-Furqan": "الفرقان",
+    "Ash-Shu'ara": "الشعراء",
+    "An-Naml": "النمل",
+    "Al-Qasas": "القصص",
+    "Al-Ankabut": "العنكبوت",
+    "Ar-Rum": "الروم",
+    "Luqman": "لقمان",
+    "As-Sajdah": "السجدة",
+    "Al-Ahzab": "الأحزاب",
+    "Saba": "سبأ",
+    "Fatir": "فاطر",
+    "Ya-Sin": "يس",
+    "As-Saffat": "الصافات",
+    "Sad": "ص",
+    "Az-Zumar": "الزمر",
+    "Ghafir": "غافر",
+    "Fussilat": "فصلت",
+    "Ash-Shura": "الشورى",
+    "Az-Zukhruf": "الزخرف",
+    "Ad-Dukhan": "الدخان",
+    "Al-Jathiya": "الجاثية",
+    "Al-Ahqaf": "الأحقاف",
+    "Muhammad": "محمد",
+    "Al-Fath": "الفتح",
+    "Al-Hujurat": "الحجرات",
+    "Qaf": "ق",
+    "Adh-Dhariyat": "الذاريات",
+    "At-Tur": "الطور",
+    "An-Najm": "النجم",
+    "Al-Qamar": "القمر",
+    "Ar-Rahman": "الرحمن",
+    "Al-Waqi'a": "الواقعة",
+    "Al-Hadid": "الحديد",
+    "Al-Mujadila": "المجادلة",
+    "Al-Hashr": "الحشر",
+    "Al-Mumtahanah": "الممتحنة",
+    "As-Saff": "الصف",
+    "Al-Jumu'ah": "الجمعة",
+    "Al-Munafiqun": "المنافقون",
+    "At-Taghabun": "التغابن",
+    "At-Talaq": "الطلاق",
+    "At-Tahrim": "التحريم",
+    "Al-Mulk": "الملك",
+    "Al-Qalam": "القلم",
+    "Al-Haqqah": "الحاقة",
+    "Al-Ma'arij": "المعارج",
+    "Nuh": "نوح",
+    "Al-Jinn": "الجن",
+    "Al-Muzzammil": "المزمل",
+    "Al-Muddaththir": "المدثر",
+    "Al-Qiyamah": "القيامة",
+    "Al-Insan": "الإنسان",
+    "Al-Mursalat": "المرسلات",
+    "An-Naba": "النبأ",
+    "An-Nazi'at": "النازعات",
+    "Abasa": "عبس",
+    "At-Takwir": "التكوير",
+    "Al-Infitar": "الإنفطار",
+    "Al-Mutaffifin": "المطففين",
+    "Al-Inshiqaq": "الإنشقاق",
+    "Al-Buruj": "البروج",
+    "At-Tariq": "الطارق",
+    "Al-A'la": "الأعلى",
+    "Al-Ghashiyah": "الغاشية",
+    "Al-Fajr": "الفجر",
+    "Al-Balad": "البلد",
+    "Ash-Shams": "الشمس",
+    "Al-Layl": "الليل",
+    "Ad-Duha": "الضحى",
+    "Ash-Sharh": "الشرح",
+    "At-Tin": "التين",
+    "Al-Alaq": "العلق",
+    "Al-Qadr": "القدر",
+    "Al-Bayyinah": "البينة",
+    "Az-Zalzalah": "الزلزلة",
+    "Al-Adiyat": "العاديات",
+    "Al-Qari'ah": "القارعة",
+    "At-Takathur": "التكاثر",
+    "Al-Asr": "العصر",
+    "Al-Humazah": "الهمزة",
+    "Al-Fil": "الفيل",
+    "Quraish": "قريش",
+    "Al-Ma'un": "الماعون",
+    "Al-Kawthar": "الكوثر",
+    "Al-Kafirun": "الكافرون",
+    "An-Nasr": "النصر",
+    "Al-Masad": "المسد",
+    "Al-Ikhlas": "الإخلاص",
+    "Al-Falaq": "الفلق",
+    "An-Nas": "الناس"
+};
 
-    document.getElementById("ayahBox").innerHTML = `
-        <h5>${data.data.surah.englishName}</h5>
-        <p style="font-size:22px;text-align:right">${data.data.text}</p>
-    `;
+/* 📖 AYAH avec nom arabe et صدق الله العظيم */
+async function loadAyah(){
+    try {
+        const res = await fetch("https://api.alquran.cloud/v1/ayah/random");
+        const data = await res.json();
+        
+        const sourateNameFr = data.data.surah.englishName;
+        const sourateNameAr = sourateNamesAr[sourateNameFr] || data.data.surah.name;
+        const ayahNumber = data.data.numberInSurah;
+        const ayahText = data.data.text;
+
+        document.getElementById("ayahBox").innerHTML = `
+            <div class="soura-info">
+                <div class="soura-name-ar">${sourateNameAr}</div>
+                <div class="soura-name-fr">${sourateNameFr} - ${ayahNumber}</div>
+            </div>
+            <div class="aya-text">${ayahText}</div>
+            <div class="sadaq-allah">﴿ صدق الله العظيم ﴾</div>
+        `;
+    } catch(error) {
+        document.getElementById("ayahBox").innerHTML = `
+            <div class="text-center text-danger">
+                Erreur de chargement du verset
+            </div>
+        `;
+    }
 }
 
 /* 📅 FORMAT DATE */
@@ -168,30 +348,46 @@ function formatDate(dateString){
 /* 💬 LOAD COMMENTS */
 async function loadComments(){
 
-    const res = await fetch(API_URL);
-    const data = await res.json();
+    try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
 
-    let html = "";
+        let html = "";
 
-    data.forEach(c=>{
-        html += `
-        <div class="comment">
-            <b>${c.name}</b><br>
-            ${c.text}<br>
-            <small>${formatDate(c.date)}</small>
+        if(data.length === 0){
+            html = '<div class="text-center text-muted">Aucun commentaire pour le moment</div>';
+        } else {
+            data.forEach(c=>{
+                html += `
+                <div class="comment">
+                    <b>${escapeHtml(c.name || 'Anonyme')}</b><br>
+                    ${escapeHtml(c.text)}<br>
+                    <small>${formatDate(c.date)}</small>
 
-            <div class="mt-2">
-                <button onclick="like(${c.id})" class="btn btn-sm btn-outline-danger">
-                    ❤️ ${c.likes || 0}
-                </button>
+                    <div class="mt-2">
+                        <button onclick="like(${c.id})" class="btn btn-sm btn-outline-danger">
+                            ❤️ ${c.likes || 0}
+                        </button>
 
-                ${isAdmin ? `<button onclick="del(${c.id})" class="btn btn-sm btn-danger">🗑</button>` : ""}
-            </div>
-        </div>
-        `;
-    });
+                        ${isAdmin ? `<button onclick="del(${c.id})" class="btn btn-sm btn-danger ms-2">🗑 Supprimer</button>` : ""}
+                    </div>
+                </div>
+                `;
+            });
+        }
 
-    document.getElementById("comments").innerHTML = html;
+        document.getElementById("comments").innerHTML = html;
+    } catch(error){
+        document.getElementById("comments").innerHTML = '<div class="text-danger">Erreur de chargement des commentaires</div>';
+    }
+}
+
+// Fonction pour échapper les caractères HTML
+function escapeHtml(text) {
+    if(!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 /* 📤 ADD COMMENT */
@@ -201,7 +397,7 @@ async function addComment(){
     const text = document.getElementById("text");
     const btn = document.getElementById("sendBtn");
 
-    if(!text.value){
+    if(!text.value.trim()){
         Swal.fire("Erreur","Écris un commentaire","error");
         return;
     }
@@ -209,51 +405,82 @@ async function addComment(){
     btn.innerHTML = "⏳ Envoi en cours...";
     btn.disabled = true;
 
-    await fetch(API_URL,{
-        method:"POST",
-        body: JSON.stringify({
-            name:name.value,
-            text:text.value
-        })
-    });
+    try {
+        await fetch(API_URL,{
+            method:"POST",
+            body: JSON.stringify({
+                name: name.value.trim() || "Anonyme",
+                text: text.value.trim()
+            })
+        });
 
-    name.value="";
-    text.value="";
+        name.value = "";
+        text.value = "";
 
-    btn.innerHTML = '<i class="fa fa-paper-plane"></i> Envoyer';
-    btn.disabled = false;
-
-    loadComments();
+        Swal.fire("Succès","Commentaire ajouté avec succès","success");
+        await loadComments();
+    } catch(error) {
+        Swal.fire("Erreur","Erreur lors de l'envoi du commentaire","error");
+    } finally {
+        btn.innerHTML = '<i class="fa fa-paper-plane"></i> Envoyer';
+        btn.disabled = false;
+    }
 }
 
 /* ❤️ LIKE */
 async function like(id){
-    await fetch(API_URL+"?like="+id);
-    loadComments();
+    try {
+        await fetch(API_URL+"?like="+id);
+        await loadComments();
+    } catch(error) {
+        Swal.fire("Erreur","Erreur lors du like","error");
+    }
 }
 
 /* 🗑 DELETE */
 async function del(id){
-    await fetch(API_URL+"?delete="+id);
-    loadComments();
+    const confirm = await Swal.fire({
+        title: "Confirmation",
+        text: "Voulez-vous vraiment supprimer ce commentaire ?",
+        icon: "warning",
+        showCancelButton: true
+    });
+    
+    if(confirm.isConfirmed) {
+        try {
+            await fetch(API_URL+"?delete="+id);
+            await loadComments();
+            Swal.fire("Supprimé","Commentaire supprimé avec succès","success");
+        } catch(error) {
+            Swal.fire("Erreur","Erreur lors de la suppression","error");
+        }
+    }
 }
 
 /* 🔐 ADMIN */
 function adminLogin(){
     Swal.fire({
-        title:"Admin",
+        title:"Mode Admin",
+        text:"Entrez le mot de passe administrateur",
         input:"password",
-        showCancelButton:true
+        showCancelButton:true,
+        confirmButtonText:"Valider",
+        cancelButtonText:"Annuler"
     }).then(res=>{
         if(res.value==="Seddik"){
             isAdmin=true;
-            Swal.fire("OK","Admin activé","success");
+            Swal.fire("Succès","Mode admin activé !","success");
             loadComments();
-        } else {
+        } else if(res.value) {
             Swal.fire("Erreur","Mot de passe incorrect","error");
         }
     });
 }
+
+// Rafraîchir l'ayah automatiquement toutes les heures
+setInterval(() => {
+    loadAyah();
+}, 3600000);
 
 /* 🚀 INIT */
 loadAyah();
